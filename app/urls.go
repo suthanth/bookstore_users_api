@@ -1,11 +1,15 @@
 package app
 
-import "github.com/suthanth/bookstore_users_api/controllers"
+import (
+	"github.com/suthanth/bookstore_users_api/controllers/ping_controller"
+
+	"github.com/suthanth/bookstore_users_api/controllers/user_controller"
+)
 
 func mapUrls() {
-	router.GET("/ping", controllers.Ping)
+	router.GET("/ping", ping_controller.Ping)
 
-	router.GET("/users/:user_id", controllers.GetUser)
-	router.GET("/users/search", controllers.SearchUser)
-	router.POST("/users", controllers.CreateUser)
+	router.GET("/users/:user_id", user_controller.GetUser)
+	router.GET("/users/search", user_controller.SearchUser)
+	router.POST("/users", user_controller.CreateUser)
 }
