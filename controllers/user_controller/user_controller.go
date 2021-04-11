@@ -1,7 +1,9 @@
 package user_controller
 
 import (
+	"fmt"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 
@@ -40,7 +42,18 @@ func CreateUser(c *gin.Context) {
 }
 
 func GetUser(c *gin.Context) {
-	c.String(http.StatusNotImplemented, "Implement me")
+	userId, err := strconv.ParseInt(c.Param("user_id"), 10, 64)
+	if err != nil {
+		userErr := rest_errors.NewBadRequest("Invalid UserId")
+		c.JSON(userErr.Status, userErr)
+		return
+	}
+	user, getErr := userService.GetUser(userId)
+	fmt.Println(getErr)
+	if getErr != nil {
+		c.JSON(getErr.Status, getErr)
+	}
+	c.JSON(http.StatusOK, user)
 }
 
 func SearchUser(c *gin.Context) {

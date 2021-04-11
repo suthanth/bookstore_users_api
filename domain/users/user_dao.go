@@ -23,9 +23,13 @@ func (user *User) GetUser() *rest_errors.RestErr {
 
 func (user *User) Save() *rest_errors.RestErr {
 	currentUser := userDb[user.Id]
-	if currentUser != nil || currentUser.Email == user.Email {
-		return rest_errors.NewBadRequest("User already exists")
+	fmt.Println(currentUser)
+	if currentUser != nil {
+		if currentUser.Email == user.Email {
+			return rest_errors.NewBadRequest("User already exists")
+		}
 	}
+
 	userDb[user.Id] = user
 	return nil
 }
