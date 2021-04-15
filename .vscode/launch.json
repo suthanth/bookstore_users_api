@@ -1,0 +1,21 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Launch file",
+            "type": "go",
+            "request": "launch",
+            "mode": "debug",
+            "program": "${file}",
+            "env": {
+                "mysql_user_name": "root",
+                "mysql_password" : "root1",
+                "mysql_host": "localhost:3306",
+                "mysql_schema": "users_db"
+            }
+        }
+    ]
+}

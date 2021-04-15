@@ -7,7 +7,7 @@ import (
 )
 
 type User struct {
-	Id          int64
+	Id          int64 `gorm:"primary_key";"AUTO_INCREMENT";`
 	FirstName   string
 	LastName    string
 	Email       string
