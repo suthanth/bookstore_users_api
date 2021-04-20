@@ -14,8 +14,19 @@ import (
 	"github.com/suthanth/bookstore_users_api/utils/rest_errors"
 )
 
-func CreateUser(c *gin.Context) {
-	var user users.User
+type UserController struct {
+	UserService userService.IUserService
+}
+
+func NewUserController(userService userService.IUserService) *UserController {
+	controller := &UserController{
+		UserService: userService,
+	}
+	return controller
+}
+
+func (u UserController) CreateUser() gin.HandlerFunc {
+
 	//Approach 1
 	// bytes, err := ioutil.ReadAll(c.Request.Body)
 	// if err != nil {
@@ -28,34 +39,44 @@ func CreateUser(c *gin.Context) {
 	// }
 
 	//Approach 2
-	if err := c.ShouldBindJSON(&user); err != nil {
-		restErr := rest_errors.NewBadRequest("Invalid Request")
-		c.JSON(restErr.Status, restErr)
-		return
+	fn := func(c *gin.Context) {
+		var user users.User
+		if err := c.ShouldBindJSON(&user); err != nil {
+			restErr := rest_errors.NewBadRequest("Invalid Request")
+			c.JSON(restErr.Status, restErr)
+			return
+		}
+		result, err := u.UserService.CreateUser(user)
+		if err != nil {
+			c.JSON(err.Status, err)
+			return
+		}
+		c.JSON(http.StatusCreated, result)
 	}
-	result, err := userService.CreateUser(user)
-	if err != nil {
-		c.JSON(err.Status, err)
-		return
-	}
-	c.JSON(http.StatusCreated, result)
+	return fn
 }
 
-func GetUser(c *gin.Context) {
-	userId, err := strconv.ParseInt(c.Param("user_id"), 10, 64)
-	if err != nil {
-		userErr := rest_errors.NewBadRequest("Invalid UserId")
-		c.JSON(userErr.Status, userErr)
-		return
+func (u UserController) GetUser() gin.HandlerFunc {
+	fn := func(c *gin.Context) {
+		userId, err := strconv.ParseInt(c.Param("user_id"), 10, 64)
+		if err != nil {
+			userErr := rest_errors.NewBadRequest("Invalid UserId")
+			c.JSON(userErr.Status, userErr)
+			return
+		}
+		user, getErr := u.UserService.GetUser(userId)
+		fmt.Println(getErr)
+		if getErr != nil {
+			c.JSON(getErr.Status, getErr)
+		}
+		c.JSON(http.StatusOK, user)
 	}
-	user, getErr := userService.GetUser(userId)
-	fmt.Println(getErr)
-	if getErr != nil {
-		c.JSON(getErr.Status, getErr)
-	}
-	c.JSON(http.StatusOK, user)
+	return fn
 }
 
-func SearchUser(c *gin.Context) {
-	c.String(http.StatusNotImplemented, "Implement me")
+func (u UserController) SearchUser() gin.HandlerFunc {
+	fn := func(c *gin.Context) {
+		c.String(http.StatusNotImplemented, "Implement me")
+	}
+	return fn
 }
