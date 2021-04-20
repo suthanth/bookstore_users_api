@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/suthanth/bookstore_users_api/controllers/ping_controller"
 	"github.com/suthanth/bookstore_users_api/db/repositories"
+	"github.com/suthanth/bookstore_users_api/mappers/user_mapper"
 	"github.com/suthanth/bookstore_users_api/services/userService"
 
 	"github.com/suthanth/bookstore_users_api/controllers/user_controller"
@@ -16,7 +17,8 @@ func NewRouter() *gin.Engine {
 	router.GET("/api/ping", pingController.Ping())
 
 	userRepository := repositories.NewUserRepository()
-	userService := userService.NewUserService(userRepository)
+	userMapper := user_mapper.NewUserMapper()
+	userService := userService.NewUserService(userRepository, *userMapper)
 	userController := user_controller.NewUserController(userService)
 
 	users := router.Group("api")
