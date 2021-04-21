@@ -16,7 +16,7 @@ func init() {
 		ValidationKeyGetter: func(t *jwt.Token) (interface{}, error) {
 			return []byte("fff"), nil
 		},
-		SigningMethod: jwt.SigningMethodHS512,
+		SigningMethod: jwt.SigningMethodHS256,
 	})
 }
 

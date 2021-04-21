@@ -6,6 +6,7 @@ import (
 	"github.com/suthanth/bookstore_users_api/controllers/ping_controller"
 	"github.com/suthanth/bookstore_users_api/db/repositories"
 	"github.com/suthanth/bookstore_users_api/mappers/user_mapper"
+	"github.com/suthanth/bookstore_users_api/services/token_service"
 	"github.com/suthanth/bookstore_users_api/services/userService"
 
 	"github.com/suthanth/bookstore_users_api/controllers/user_controller"
@@ -18,12 +19,14 @@ func NewRouter() *gin.Engine {
 	router.GET("/api/ping", pingController.Ping())
 	userRepository := repositories.NewUserRepository()
 	userMapper := user_mapper.NewUserMapper()
-	userService := userService.NewUserService(userRepository, *userMapper)
+	tokenService := token_service.NewTokenService()
+	userService := userService.NewUserService(userRepository, *userMapper, tokenService)
 	userController := user_controller.NewUserController(userService)
 
 	noAuthUsers := router.Group("api")
 	{
 		noAuthUsers.POST("/users", userController.CreateUser())
+		noAuthUsers.POST("/users/login", userController.Login())
 	}
 	router.Use(auth.AuthMiddleWare())
 	authUsers := router.Group("api")

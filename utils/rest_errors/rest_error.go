@@ -41,3 +41,19 @@ func NewFailedToCreateUser(message string) *RestErr {
 		Error:   "bad_requesr",
 	}
 }
+
+func NewUnAuthorizedError(message string) *RestErr {
+	return &RestErr{
+		Status:  http.StatusUnauthorized,
+		Message: message,
+		Error:   "unauthorized",
+	}
+}
+
+func NewInternalServerError(message string) *RestErr {
+	return &RestErr{
+		Status:  http.StatusInternalServerError,
+		Message: message,
+		Error:   "internal_server_error",
+	}
+}

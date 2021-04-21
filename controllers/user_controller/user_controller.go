@@ -8,6 +8,7 @@ import (
 	"github.com/gin-gonic/gin"
 
 	"github.com/suthanth/bookstore_users_api/domain/users"
+	"github.com/suthanth/bookstore_users_api/dto/user_dto"
 
 	"github.com/suthanth/bookstore_users_api/services/userService"
 
@@ -80,6 +81,23 @@ func (u UserController) GetUser() gin.HandlerFunc {
 func (u UserController) SearchUser() gin.HandlerFunc {
 	fn := func(c *gin.Context) {
 		c.String(http.StatusNotImplemented, "Implement me")
+	}
+	return fn
+}
+
+func (u UserController) Login() gin.HandlerFunc {
+	fn := func(c *gin.Context) {
+		var loginDto user_dto.UserLoginDto
+		if err := c.ShouldBindJSON(&loginDto); err != nil {
+			restErr := rest_errors.NewBadRequest("Invalid Request")
+			c.JSON(restErr.Status, restErr)
+			return
+		}
+		tokenDetails, err := u.UserService.Login(loginDto)
+		if err != nil {
+			c.JSON(err.Status, err)
+		}
+		c.JSON(http.StatusOK, tokenDetails)
 	}
 	return fn
 }
