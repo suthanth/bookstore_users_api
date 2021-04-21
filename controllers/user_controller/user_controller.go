@@ -12,6 +12,8 @@ import (
 	"github.com/suthanth/bookstore_users_api/services/userService"
 
 	"github.com/suthanth/bookstore_users_api/utils/rest_errors"
+
+	"github.com/suthanth/bookstore_users_api/logger"
 )
 
 type UserController struct {
@@ -40,6 +42,7 @@ func (u UserController) CreateUser() gin.HandlerFunc {
 
 	//Approach 2
 	fn := func(c *gin.Context) {
+		logger.SugarLogger.Infow("Inside create user controller")
 		var user users.User
 		if err := c.ShouldBindJSON(&user); err != nil {
 			restErr := rest_errors.NewBadRequest("Invalid Request")

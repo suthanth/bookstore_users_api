@@ -10,7 +10,9 @@ require (
 	github.com/lib/pq v1.10.0 // indirect
 	github.com/mattn/go-sqlite3 v1.14.7 // indirect
 	github.com/ziutek/mymysql v1.5.4 // indirect
+	go.uber.org/zap v1.16.0
 	golang.org/x/crypto v0.0.0-20200622213623-75b288015ac9
+	gopkg.in/natefinch/lumberjack.v2 v2.0.0
 	gorm.io/driver/mysql v1.0.5
 	gorm.io/gorm v1.21.7
 )
