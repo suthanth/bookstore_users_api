@@ -2,6 +2,7 @@ package app
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/suthanth/bookstore_users_api/auth"
 	"github.com/suthanth/bookstore_users_api/controllers/ping_controller"
 	"github.com/suthanth/bookstore_users_api/db/repositories"
 	"github.com/suthanth/bookstore_users_api/mappers/user_mapper"
@@ -15,17 +16,20 @@ func NewRouter() *gin.Engine {
 
 	pingController := new(ping_controller.PingController)
 	router.GET("/api/ping", pingController.Ping())
-
 	userRepository := repositories.NewUserRepository()
 	userMapper := user_mapper.NewUserMapper()
 	userService := userService.NewUserService(userRepository, *userMapper)
 	userController := user_controller.NewUserController(userService)
 
-	users := router.Group("api")
+	noAuthUsers := router.Group("api")
 	{
-		users.GET("/users/:user_id", userController.GetUser())
-		users.GET("/users/search", userController.SearchUser())
-		users.POST("/users", userController.CreateUser())
+		noAuthUsers.POST("/users", userController.CreateUser())
+	}
+	router.Use(auth.AuthMiddleWare())
+	authUsers := router.Group("api")
+	{
+		authUsers.GET("/users/:user_id", userController.GetUser())
+		authUsers.GET("/users/search", userController.SearchUser())
 	}
 	return router
 }
