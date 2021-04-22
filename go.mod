@@ -7,6 +7,7 @@ require (
 	github.com/auth0/go-jwt-middleware v1.0.0
 	github.com/form3tech-oss/jwt-go v3.2.2+incompatible
 	github.com/gin-gonic/gin v1.7.1
+	github.com/go-redis/redis/v7 v7.4.0
 	github.com/go-sql-driver/mysql v1.6.0
 	github.com/kylelemons/go-gypsy v1.0.0 // indirect
 	github.com/lib/pq v1.10.0 // indirect
