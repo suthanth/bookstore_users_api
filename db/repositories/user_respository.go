@@ -7,7 +7,7 @@ import (
 )
 
 type IUserRepository interface {
-	FindUserById(int64) (users.User, *rest_errors.RestErr)
+	FindUserById(uint64) (users.User, *rest_errors.RestErr)
 	CreateUser(users.User) *rest_errors.RestErr
 	FindByUserEmail(string) (users.User, *rest_errors.RestErr)
 }
@@ -34,7 +34,7 @@ func (u UserRepository) CreateUser(user users.User) *rest_errors.RestErr {
 	return nil
 }
 
-func (u UserRepository) FindUserById(id int64) (users.User, *rest_errors.RestErr) {
+func (u UserRepository) FindUserById(id uint64) (users.User, *rest_errors.RestErr) {
 	db := u.DbService.GetDb()
 	var user users.User
 	if db == nil {

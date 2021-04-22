@@ -38,7 +38,7 @@ var (
 func init() {
 	var err error
 
-	dataSourceName := fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=utf8",
+	dataSourceName := fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=utf8&parseTime=true",
 		userName, password, host, schema,
 	)
 	fmt.Println(dataSourceName)

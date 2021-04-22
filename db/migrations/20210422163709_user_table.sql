@@ -7,8 +7,8 @@ create table users (
     last_name varchar(100) not null,
     email varchar(100) not null,
     password varchar(1000) not null,
-    created_at timestamp default now(),
-    updated_at timestamp default now(),
+    created_at timestamp not null,
+    updated_at timestamp DEFAULT current_timestamp,
     primary key(id)
 );
 

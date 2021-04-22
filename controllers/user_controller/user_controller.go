@@ -7,6 +7,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 
+	"github.com/suthanth/bookstore_users_api/auth"
 	"github.com/suthanth/bookstore_users_api/domain/users"
 	"github.com/suthanth/bookstore_users_api/dto/user_dto"
 
@@ -62,16 +63,22 @@ func (u UserController) CreateUser() gin.HandlerFunc {
 
 func (u UserController) GetUser() gin.HandlerFunc {
 	fn := func(c *gin.Context) {
-		userId, err := strconv.ParseInt(c.Param("user_id"), 10, 64)
+		userId, err := strconv.ParseUint(c.Param("user_id"), 10, 64)
 		if err != nil {
 			userErr := rest_errors.NewBadRequest("Invalid UserId")
 			c.JSON(userErr.Status, userErr)
+			return
+		}
+		_, err = auth.ValidateToken(c.GetHeader("Authorization"), userId)
+		if err != nil {
+			c.JSON(http.StatusForbidden, rest_errors.NewBadRequest("Invalid token"))
 			return
 		}
 		user, getErr := u.UserService.GetUser(userId)
 		fmt.Println(getErr)
 		if getErr != nil {
 			c.JSON(getErr.Status, getErr)
+			return
 		}
 		c.JSON(http.StatusOK, user)
 	}
@@ -95,7 +102,9 @@ func (u UserController) Login() gin.HandlerFunc {
 		}
 		tokenDetails, err := u.UserService.Login(loginDto)
 		if err != nil {
+			logger.SugarLogger.Errorf(err.Message)
 			c.JSON(err.Status, err)
+			return
 		}
 		c.JSON(http.StatusOK, tokenDetails)
 	}

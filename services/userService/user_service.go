@@ -14,7 +14,7 @@ import (
 
 type IUserService interface {
 	CreateUser(users.User) (user_dto.UserDto, *rest_errors.RestErr)
-	GetUser(int64) (user_dto.UserDto, *rest_errors.RestErr)
+	GetUser(uint64) (user_dto.UserDto, *rest_errors.RestErr)
 	Login(user_dto.UserLoginDto) (token_dto.TokenDetailsDto, *rest_errors.RestErr)
 }
 
@@ -57,7 +57,7 @@ func (u UserService) CreateUser(user users.User) (user_dto.UserDto, *rest_errors
 	return u.UserMapper.MapUserDomainToDto(user), nil
 }
 
-func (u UserService) GetUser(userId int64) (user_dto.UserDto, *rest_errors.RestErr) {
+func (u UserService) GetUser(userId uint64) (user_dto.UserDto, *rest_errors.RestErr) {
 	var user_dto user_dto.UserDto
 	user, err := u.UserRepository.FindUserById(userId)
 	if err != nil {
@@ -84,7 +84,7 @@ func (u UserService) Login(loginDto user_dto.UserLoginDto) (token_dto.TokenDetai
 	}
 	tokenDetails, err = u.TokenService.CreateToken(existingUser.ID)
 	if err != nil {
-		return tokenDetails, rest_errors.NewInternalServerError("Failed to create token")
+		return tokenDetails, err
 	}
 	return tokenDetails, nil
 }
