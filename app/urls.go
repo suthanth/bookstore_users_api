@@ -3,9 +3,11 @@ package app
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/suthanth/bookstore_users_api/auth"
+	"github.com/suthanth/bookstore_users_api/cache"
 	"github.com/suthanth/bookstore_users_api/controllers/ping_controller"
 	"github.com/suthanth/bookstore_users_api/db/repositories"
 	"github.com/suthanth/bookstore_users_api/mappers/user_mapper"
+	"github.com/suthanth/bookstore_users_api/services/cache_service"
 	"github.com/suthanth/bookstore_users_api/services/token_service"
 	"github.com/suthanth/bookstore_users_api/services/userService"
 
@@ -20,7 +22,9 @@ func NewRouter() *gin.Engine {
 	userRepository := repositories.NewUserRepository()
 	userMapper := user_mapper.NewUserMapper()
 	tokenService := token_service.NewTokenService()
-	userService := userService.NewUserService(userRepository, *userMapper, tokenService)
+	redisClient := cache.GetRedisClient()
+	cacheService := cache_service.NewCacheService(redisClient)
+	userService := userService.NewUserService(userRepository, *userMapper, tokenService, cacheService)
 	userController := user_controller.NewUserController(userService)
 
 	noAuthUsers := router.Group("api")

@@ -47,7 +47,9 @@ func extractToken(bearerToken string) string {
 }
 
 func ValidateToken(bearerToken string, userId uint64) (token_dto.TokenDetailsDto, error) {
-	bearerToken = extractToken(bearerToken)
+	if strings.HasPrefix(bearerToken, "Bearer") {
+		bearerToken = extractToken(bearerToken)
+	}
 	var tokenDetials token_dto.TokenDetailsDto
 	token, err := jwt.Parse(bearerToken, func(t *jwt.Token) (interface{}, error) {
 		if _, ok := t.Claims.(jwt.MapClaims); !ok {
@@ -64,8 +66,10 @@ func ValidateToken(bearerToken string, userId uint64) (token_dto.TokenDetailsDto
 		return tokenDetials, errors.New("invalid token")
 	}
 	accessUUID, _ := claimes["access_uuid"].(string)
+	refreshUUID, _ := claimes["refresh_uuid"].(string)
 	tokenDetials = token_dto.TokenDetailsDto{
-		AccessUUID: accessUUID,
+		AccessUUID:  accessUUID,
+		RefreshUUID: refreshUUID,
 	}
 	return tokenDetials, nil
 }

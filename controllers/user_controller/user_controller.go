@@ -69,9 +69,13 @@ func (u UserController) GetUser() gin.HandlerFunc {
 			c.JSON(userErr.Status, userErr)
 			return
 		}
-		_, err = auth.ValidateToken(c.GetHeader("Authorization"), userId)
+		tokenDetails, err := auth.ValidateToken(c.GetHeader("Authorization"), userId)
 		if err != nil {
 			c.JSON(http.StatusForbidden, rest_errors.NewBadRequest("Invalid token"))
+			return
+		}
+		if cacheErr := u.UserService.ValidateTokenUUIDWithCache(tokenDetails.AccessUUID, userId); cacheErr != nil {
+			c.JSON(cacheErr.Status, cacheErr)
 			return
 		}
 		user, getErr := u.UserService.GetUser(userId)
